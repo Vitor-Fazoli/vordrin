@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "ayfkNVxjeRKvc3stfXySs9bKPQnM/c5frYD0pn+x2wE=",
+  "Source": "aegis",
+  "BasePath": "_content/aegis",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
