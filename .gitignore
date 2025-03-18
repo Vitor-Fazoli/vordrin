@@ -1,0 +1,7 @@
+bin
+obj
+app.db
+node_modules
+.next
+.env.local
+.env
