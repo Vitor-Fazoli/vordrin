@@ -1,53 +1,72 @@
-using System.Net.WebSockets;
-using System.Text;
+using System.Collections.Concurrent;
+using SocketIOSharp.Server;
 
 var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
-app.UseWebSockets();
-
-app.Use(async (context, next) =>
+builder.Services.AddCors(options =>
 {
-    if (context.Request.Path == "/ws")
+    options.AddDefaultPolicy(policy =>
     {
-        if (context.WebSockets.IsWebSocketRequest)
-        {
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            await HandleConnection(webSocket);
-        }
-        else
-        {
-            context.Response.StatusCode = 400;
-        }
-    }
-    else
-    {
-        await next();
-    }
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .WithOrigins("http://localhost:3000")
+              .AllowCredentials();
+    });
 });
 
-static async Task HandleConnection(WebSocket socket)
+var app = builder.Build();
+app.UseCors();
+
+// Store connected clients
+var connectedClients = new ConcurrentDictionary<string, SocketIOSocket>();
+
+// Game state
+var gameState = new
 {
-    var buffer = new byte[1024 * 4];
-
-    while (socket.State == WebSocketState.Open)
+    players = new List<object>(),
+    enemies = new List<object>
     {
-        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        if (result.MessageType == WebSocketMessageType.Close)
+        new
         {
-            await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Conexão fechada", CancellationToken.None);
-            break;
-        }
-        else
-        {
-            var receivedMessage = Encoding.UTF8.GetString(buffer, 0, result.Count);
-            Console.WriteLine($"Mensagem recebida: {receivedMessage}");
-
-            var responseMessage = $"Servidor recebeu: {receivedMessage}";
-            var responseBytes = Encoding.UTF8.GetBytes(responseMessage);
-            await socket.SendAsync(new ArraySegment<byte>(responseBytes), WebSocketMessageType.Text, true, CancellationToken.None);
+            id = "enemy1",
+            name = "Dragon",
+            health = 100,
+            healthMax = 100
         }
     }
-}
+};
+
+// Socket.IO server setup
+var socketServer = new SocketIOServer(new SocketIOServerOption(5055));
+
+socketServer.OnConnection((socket) =>
+{
+    var socketId = socket.Id;
+    connectedClients.TryAdd(socketId, socket);
+    Console.WriteLine($"Client connected: {socketId}");
+
+    // Send initial game state
+    socket.Emit("gameStateUpdate", gameState);
+
+    socket.On("playerAttack", (data) =>
+    {
+        Console.WriteLine($"Player attack received: {data}");
+        socket.Emit("enemyDamaged", new
+        {
+            enemyId = "enemy1",
+            newHealth = 90 // Example: reduce health by 10
+        });
+    });
+
+    socket.OnDisconnect(() =>
+    {
+        Console.WriteLine($"Client disconnected: {socketId}");
+        connectedClients.TryRemove(socketId, out _);
+    });
+});
+
+socketServer.Start();
+
+Console.WriteLine("Socket.IO server running on port 5055");
 
 app.Run();

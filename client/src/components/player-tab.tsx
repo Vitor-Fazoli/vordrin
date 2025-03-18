@@ -1,5 +1,8 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import ProgressBar from "./progress-bar";
+import Image from "next/image";
 
 interface PlayerStats {
     health: number;
@@ -13,65 +16,75 @@ interface PlayerStats {
 }
 
 const PlayerTab = () => {
-    const [isOnCooldown, setIsOnCooldown] = useState(false);
-    const [cooldownTimer, setCooldownTimer] = useState(0);
-    const dodgeCooldownTime = 5000; // 5 seconds cooldown
+    const [dodgeCooldown, setDodgeCooldown] = useState(2000);
+    const [currentCooldown, setCurrentCooldown] = useState(0);
+    const [canDodge, setCanDodge] = useState(true);
 
-    const handleDodge = () => {
-        if (!isOnCooldown) {
-            setIsOnCooldown(true);
-            setCooldownTimer(dodgeCooldownTime);
+    const dodgeFunction = () => {
+        if (!canDodge) return;
 
-            // Add dodge logic here
-            const dodgeChance = 0.3; // 30% chance to dodge
-            const isDodgeSuccessful = Math.random() < dodgeChance;
+        document.getElementById("player")?.classList.add("mt-20");
 
-            if (isDodgeSuccessful) {
-                console.log('Dodge successful!');
-                // Add dodge success effects here
+        setTimeout(() => {
+            document.getElementById("player")?.classList.remove("mt-20");
+        }, 500);
+
+        setCanDodge(false);
+        setCurrentCooldown(dodgeCooldown);
+
+        // Start cooldown countdown
+        const startTime = Date.now();
+        const cooldownInterval = setInterval(() => {
+            const elapsed = Date.now() - startTime;
+            const remaining = Math.max(0, dodgeCooldown - elapsed);
+            setCurrentCooldown(remaining);
+
+            if (remaining === 0) {
+                setCanDodge(true);
+                clearInterval(cooldownInterval);
             }
-        }
+        }, 50);
     };
 
     useEffect(() => {
-        let interval: NodeJS.Timeout;
+        const handleKeyDown = (event: KeyboardEvent) => {
+            switch (event.key) {
+                case "Shift": // Shift pode ser usado para desviar
+                    dodgeFunction();
+                    break;
+                default:
+                    break;
+            }
+        };
 
-        if (isOnCooldown && cooldownTimer > 0) {
-            interval = setInterval(() => {
-                setCooldownTimer(prev => {
-                    if (prev <= 0) {
-                        setIsOnCooldown(false);
-                        clearInterval(interval);
-                        return 0;
-                    }
-                    return prev - 100;
-                });
-            }, 100);
-        }
+        window.addEventListener("keydown", handleKeyDown);
 
         return () => {
-            if (interval) clearInterval(interval);
+            window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [isOnCooldown, cooldownTimer]);
+    }, [canDodge]); // Add canDodge to dependency array
 
     return (
-        <div className="border border-rose-900/50 p-2">
-            <h2><span className="text-rose-700 outline mr-0.5 font-bold">O</span>ilmann</h2>
-            <div className="flex gap-10">
-                <div>
-                    <p>Health</p>
-                    <ProgressBar progress={100} maxValue={100} small={true}></ProgressBar>
-                    <p>Shield</p>
-                    <ProgressBar progress={100} maxValue={100} small={true}></ProgressBar>
+        <div id='player' className='flex gap-1 duration-500'>
+            <div className='flex flex-col gap-1'>
+                <div className="border border-rose-900/50 p-2  ">
+                    <h2><span className="text-rose-700 outline mr-0.5 font-bold">O</span>ilmann</h2>
+                    <div className="flex gap-10">
+                        <div>
+                            <p>Health</p>
+                            <ProgressBar progress={100} maxValue={100} small={true}></ProgressBar>
+                            <p>Shield</p>
+                            <ProgressBar progress={0} maxValue={100} small={true}></ProgressBar>
+                        </div>
+                    </div>
                 </div>
-                <div
-                    className="relative size-10 cursor-pointer"
-                    onClick={handleDodge}
-                    title={isOnCooldown ? `Dodge cooldown: ${(cooldownTimer / 1000).toFixed(1)}s` : 'Click to dodge'}
-                >
-                    <div className={`absolute inset-0 border border-rose-900 rounded-full ${isOnCooldown ? 'animate-ping' : ''} opacity-75`}></div>
-                    <div className="relative border border-rose-900 rounded-full size-10"></div>
-                </div>
+                <ProgressBar
+                    progress={dodgeCooldown - currentCooldown}
+                    maxValue={dodgeCooldown}
+                    small={true}
+                ></ProgressBar>
+            </div>
+            <div className="border border-rose-900/50 w-5">
             </div>
         </div>
     );

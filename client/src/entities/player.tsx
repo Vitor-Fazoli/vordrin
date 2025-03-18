@@ -1,6 +1,7 @@
 import { Weapon } from "./weapon";
 
 export class Player {
+    public id: number;
     public name: string;
     public level: number;
     public xp: number;
@@ -10,6 +11,7 @@ export class Player {
     public weaponSlots: (Weapon | null)[] = [null, null];
 
     constructor(
+        id: number,
         name: string,
         level: number,
         xp: number,
@@ -18,6 +20,7 @@ export class Player {
         damage: number,
         weapon?: Weapon
     ) {
+        this.id = id;
         this.name = name;
         this.level = level;
         this.xp = xp;
