@@ -1,123 +1,57 @@
-"use client";
+'use client'
 
-import PlayerTab from '@/components/player-tab';
-import ProgressBar from '@/components/progress-bar';
-import { useState, useEffect, useCallback } from 'react';
-import { useGameState } from '@/hooks/useGameState';
-import { useWebSocket } from '@/hooks/useWebSocket';
-import { Enemy } from '@/types/game';
+import React, { useEffect, useState } from "react";
+import { HubConnectionBuilder } from "@microsoft/signalr";
 
-export default function GamePage() {
-  const {
-    gameState,
-    updateGameState,
-    enemies,
-    experience,
-    level,
-    experienceToNextLevel
-  } = useGameState();
+const GamePage: React.FC = () => {
+  const [enemyHp, setEnemyHp] = useState(100);
+  const [connection, setConnection] = useState<any>(null);
+  const [sessionId, setSessionId] = useState("room123");
 
-  const socket = useWebSocket();
-
-  const updateEnemyHealth = useCallback((enemyId: string, newHealth: number) => {
-    const updatedEnemies = enemies.map((enemy: Enemy) =>
-      enemy.id === enemyId ? { ...enemy, health: newHealth } : enemy
-    );
-    updateGameState({ ...gameState, enemies: updatedEnemies });
-  }, [enemies, gameState, updateGameState]);
-
-  // Handle incoming game state updates
   useEffect(() => {
-    if (!socket) return;
+    // Conectando-se ao SignalR Hub
+    const newConnection = new HubConnectionBuilder()
+      .withUrl("http://localhost:5189/gameHub")  // URL do backend SignalR
+      .build();
 
-    const handleGameStateUpdate = (newState: any) => {
-      updateGameState(newState);
-    };
+    // Iniciar a conexão
+    newConnection.start()
+      .then(() => {
+        console.log("Conectado ao SignalR");
+      })
+      .catch((err: any) => console.log("Erro ao conectar ao SignalR:", err));
 
-    const handleEnemyDamaged = (data: { enemyId: string; newHealth: number; }) => {
-      updateEnemyHealth(data.enemyId, data.newHealth);
-    };
+    setConnection(newConnection);
 
-    socket.socket?.on('gameStateUpdate', handleGameStateUpdate);
-    socket.socket?.on('enemyDamaged', handleEnemyDamaged);
-
-    return () => {
-      socket.socket?.off('gameStateUpdate', handleGameStateUpdate);
-      socket.socket?.off('enemyDamaged', handleEnemyDamaged);
-    };
-  }, [socket, updateGameState, updateEnemyHealth]);
-
-  const causeDamage = useCallback(() => {
-    if (!socket || !enemies.length) return;
-
-    const hitBtn = document.getElementById('hit-btn');
-    hitBtn?.classList.add('animate-pulse');
-
-    socket.socket?.emit('playerAttack', {
-      enemyId: enemies[0].id,
-      playerId: gameState.playerId,
-      timestamp: Date.now()
+    // Ouvir a atualização do HP do inimigo via SignalR
+    newConnection.on("ReceiveEnemyHp", (newHp: number) => {
+      setEnemyHp(newHp);
     });
 
-    setTimeout(() => {
-      hitBtn?.classList.remove('animate-pulse');
-    }, 10);
-  }, [socket, enemies, gameState.playerId]);
-
-  // Game loop for client-side predictions and animations
-  const gameLoop = useCallback(() => {
-    // Handle animations and visual updates
-    // Implement client-side prediction here if needed
+    return () => {
+      newConnection.stop();
+    };
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(gameLoop, 1000 / 60);
-    return () => clearInterval(interval);
-  }, [gameLoop]);
-
-  if (!gameState.isConnected) {
-    return <div>Connecting to game server...</div>;
-  }
+  // Função para lidar com o clique de ataque
+  const handleAttack = () => {
+    // Envia uma mensagem de ataque para o servidor via SignalR
+    if (connection) {
+      connection.invoke("Attack", sessionId, 10)  // Enviar dano de 10 como exemplo
+        .catch((err: any) => console.error("Erro ao enviar ataque:", err));
+    }
+  };
 
   return (
-    <div className='w-full h-full'>
-      <div className="flex w-full">
-        <aside className='bg-red-400 w-1/12 h-full'>
-          <div className="players-list">
-            {gameState.players.map(player => (
-              <div key={player.id} className="player-item">
-                {player.name}
-              </div>
-            ))}
-          </div>
-        </aside>
-        <main className='w-11/12 h-full flex flex-col gap-5 justify-center items-center'>
-          <div className='w-1/2 pt-4'>
-            <ProgressBar
-              label={enemies[0]?.name || 'No enemy'}
-              progress={enemies[0]?.health || 0}
-              maxValue={enemies[0]?.healthMax || 100}
-            />
-          </div>
-          <PlayerTab />
-        </main>
-        <button
-          id='hit-btn'
-          className='bg-rose-700 py-5 px-9'
-          onClick={causeDamage}
-          disabled={!gameState.isConnected || !enemies.length}
-        >
-          HIT!
-        </button>
-      </div>
-      <div className="absolute bottom-0 w-full">
-        <p className='pl-2'>Level: <span>{level}</span></p>
-        <ProgressBar
-          progress={experience}
-          maxValue={experienceToNextLevel}
-          small={true}
-        />
-      </div>
+    <div>
+      <h1>Clicker RPG Multiplayer</h1>
+      <p>Id da sala: {sessionId}</p>
+      <h2>Vida do inimigo: {enemyHp}</h2>
+      <progress value={enemyHp} max="100"></progress>
+      <br />
+      <button onClick={handleAttack}>Atacar!</button>
     </div>
   );
-}
+};
+
+export default GamePage;
