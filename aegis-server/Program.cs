@@ -1,30 +1,44 @@
-using Microsoft.EntityFrameworkCore;
-using aegis_server.Hubs;
+using System.Text;
 using aegis_server.Data;
+using aegis_server.Hubs;
+using aegis_server.Services;
+using dotenv.net;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+
+DotEnv.Load();
+
+var env = DotEnv.Read();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowLocalhost", policy =>
+var key = Encoding.ASCII.GetBytes(env["SECRET"]);
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
     {
-        policy.WithOrigins("http://localhost:3000") // Permitir acesso da origem do frontend
-              .AllowAnyMethod() // Permitir qualquer método (GET, POST, etc.)
-              .AllowAnyHeader() // Permitir qualquer cabeçalho
-              .AllowCredentials(); // Permitir credenciais
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
     });
-});
 
-// Configuração do banco
 builder.Services.AddDbContext<AegisDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite("Data Source=app.db"));
+
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<PlayerService>();
 
 builder.Services.AddSignalR();
 builder.Services.AddControllers();
 
 var app = builder.Build();
 app.UseHttpsRedirection();
-app.UseAuthorization();
 app.MapControllers();
 app.UseCors("AllowLocalhost");
 app.MapHub<GameHub>("/gameHub");

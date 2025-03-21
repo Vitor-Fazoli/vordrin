@@ -1,14 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace aegis_server.Models;
 
-public class Player
+public class Player(string id, string name)
 {
-    [Key]
-    public Guid Id { get; set; } = Guid.NewGuid();
-    public string Name { get; set; } = "";
+    public string Id { get; set; } = id;
+    public string Name { get; set; } = name;
     public int Level { get; set; } = 1;
-    public string Weapon { get; set; } = "Greatsword";
+    public Guid? Weapon { get; set; }
     public int Hp { get; set; } = 100;
-    public Guid? SessionId { get; set; }
+    public int MaxHp { get; set; } = 100;
 }
