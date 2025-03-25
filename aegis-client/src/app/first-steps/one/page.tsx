@@ -19,18 +19,25 @@ export default function ChooseCountry() {
   return (
     <div className="flex flex-col items-center space-y-4 p-6">
       <h1 className="text-2xl font-bold">Escolha seu País</h1>
-      {countries.map((c) => (
-        <button
-          key={c.id}
-          className={`px-4 py-2 border ${countryId === c.id ? 'bg-blue-600 text-white' : ''}`}
-          onClick={() => {
-            setCountry(c.id);
-            router.push('/first-steps/two');
-          }}
-        >
-          {c.name}
+      <div className='flex gap-2 w-full h-full'>
+        {countries.map((c) => (
+            <button
+              key={c.id}
+              className={`flex-grow px-4 py-2 border border-rose-700 ${countryId === c.id ? 'bg-blue-600 text-white' : ''}`}
+              onClick={() => {
+                setCountry(c.id);
+                router.push('/first-steps/two');
+              }}
+            >
+              {c.name}
+            </button>
+        ))}
+      </div>
+      <div>
+        <button>
+            Next
         </button>
-      ))}
+      </div>
     </div>
   );
 }
