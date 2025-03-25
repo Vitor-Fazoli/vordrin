@@ -31,6 +31,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddDbContext<AegisDbContext>(options =>
     options.UseSqlite("Data Source=app.db"));
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .WithOrigins("http://localhost:3000") // Permite requisições de qualquer lugar (localhost:3000, etc.)
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
+});
+
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<PlayerService>();
 
@@ -40,7 +52,8 @@ builder.Services.AddControllers();
 var app = builder.Build();
 app.UseHttpsRedirection();
 app.MapControllers();
-app.UseCors("AllowLocalhost");
+app.UseCors("AllowAll");
+
 app.MapHub<GameHub>("/gameHub");
 
 app.Run();

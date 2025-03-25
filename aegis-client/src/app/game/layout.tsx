@@ -19,7 +19,7 @@ export default function GameLayout({
         >
           <FaGamepad size={24} />
         </button>
-        <button 
+        <button
           onClick={() => router.push('/game/stats')}
           className="p-2 rounded-lg text-black hover:text-white"
           aria-label="Stats"

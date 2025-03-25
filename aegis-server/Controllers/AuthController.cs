@@ -20,6 +20,9 @@ public class AuthController(AuthService authService, PlayerService playerService
     {
         try
         {
+            if (string.IsNullOrEmpty(request.Username) || string.IsNullOrEmpty(request.Password))
+                return BadRequest("Need username and password.");
+
             var user = _authService.Register(request.Username, request.Password);
 
             await _playerService.CreatePlayer(user.Id, request.Username);

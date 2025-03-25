@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Nova_Square } from 'next/font/google';
 
+export const API_URL = "http://localhost:5189/api";
+
 const novaSquare = Nova_Square({
   subsets: ['latin'],
   variable: '--font-nova-square',

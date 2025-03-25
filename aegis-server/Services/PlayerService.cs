@@ -10,7 +10,7 @@ namespace aegis_server.Services
 
         public async Task<Player> CreatePlayer(string id, string name)
         {
-            var player = new Player(id, name);
+            var player = new Player(id);
             _dbContext.Players.Add(player);
             await _dbContext.SaveChangesAsync();
             return player;

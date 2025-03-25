@@ -1,57 +1,53 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import * as signalR from "@microsoft/signalr";
 
-interface Message {
-  userId: string;
-  text: string;
-}
+const API_URL = "http://localhost:5189/gameHub"; // Ajuste conforme necessário
 
-const useGameHub = () => {
+export function useGame() {
   const [connection, setConnection] = useState<signalR.HubConnection | null>(null);
-  const [isConnected, setIsConnected] = useState<boolean>(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [playerHealth, setPlayerHealth] = useState(100);
+  const [enemyHealth, setEnemyHealth] = useState(100);
+  const [battleStarted, setBattleStarted] = useState(false);
 
   useEffect(() => {
-    // Inicializa a conexão com SignalR
-    const connection = new signalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5189/gameHub") // Substitua pela URL do seu servidor SignalR
+    const newConnection = new signalR.HubConnectionBuilder()
+      .withUrl(API_URL, {
+        withCredentials: true
+      })
+      .withAutomaticReconnect()
       .build();
 
-    // Evento para receber mensagens do servidor
-    connection.on("ReceiveUpdate", (message: string) => {
-      setMessages((prevMessages) => [...prevMessages, { userId: "Server", text: message }]);
+    newConnection
+      .start()
+      .then(() => console.log("Conectado ao servidor!"))
+      .catch(err => console.error("Erro na conexão:", err));
+
+    newConnection.on("PlayerHealthUpdated", setPlayerHealth);
+    newConnection.on("EnemyHealthUpdated", setEnemyHealth);
+    newConnection.on("BattleStarted", () => setBattleStarted(true));
+    newConnection.on("BattleEnded", message => {
+      alert(message);
+      setBattleStarted(false);
     });
 
-    // Tente conectar
-    connection.start()
-      .then(() => {
-        setIsConnected(true);
-        console.log("Conectado ao SignalR!");
-      })
-      .catch((err) => {
-        console.error("Erro ao conectar no SignalR: ", err);
-      });
-
-    setConnection(connection);
+    setConnection(newConnection);
 
     return () => {
-      if (connection) {
-        connection.stop();
-      }
+      newConnection.stop();
     };
   }, []);
 
-  const sendMessage = async (message: string) => {
-    if (connection) {
-      try {
-        await connection.invoke("SendUpdate", message);
-      } catch (err) {
-        console.error("Erro ao enviar mensagem: ", err);
-      }
-    }
+  const startBattle = async () => {
+    if (connection) await connection.send("StartBattle");
   };
 
-  return { isConnected, messages, sendMessage };
-};
+  const attack = async () => {
+    if (connection) await connection.send("Attack");
+  };
 
-export default useGameHub;
+  const dodge = async () => {
+    if (connection) await connection.send("Dodge");
+  };
+
+  return { playerHealth, enemyHealth, battleStarted, startBattle, attack, dodge };
+}
