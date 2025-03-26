@@ -9,5 +9,6 @@
         "aegis-server/bin": true,
         "obj": true
     },
-    "explorerExclude.backup": {}
+    "explorerExclude.backup": {},
+    "postman.settings.dotenv-detection-notification-visibility": false
 }
