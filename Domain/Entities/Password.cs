@@ -1,8 +1,8 @@
 namespace Domain.Entities;
 
-public class Password
+public class Password(string password)
 {
-    public string StatPassword { get; set; }
+    private readonly string _password = Validate(password);
 
     private static string Validate(string password)
     {
@@ -12,15 +12,8 @@ public class Password
         return password;
     }
 
-    public Password() { }
-
-    public Password(string password)
-    {
-        StatPassword = Validate(password);
-    }
-
     public string GetPassword()
     {
-        return StatPassword;
+        return _password;
     }
 }
