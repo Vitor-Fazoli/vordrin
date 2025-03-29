@@ -3,11 +3,12 @@
         "**/.git": true,
         "**/.svn": true,
         "**/.hg": true,
-        "**/CVS": true,
         "**/.DS_Store": true,
         "**/Thumbs.db": true,
+        "**/CVS": true,
         "aegis-server/bin": true,
-        "obj": true
+        "**/obj": true,
+        "**/bin": true
     },
     "explorerExclude.backup": {},
     "postman.settings.dotenv-detection-notification-visibility": false
