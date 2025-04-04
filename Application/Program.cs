@@ -6,6 +6,7 @@ using Infrastructure.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
+
 DotEnv.Load();
 
 var env = DotEnv.Read();
@@ -31,13 +32,12 @@ builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll", policy =>
+    options.AddPolicy("CorsPolicy", builder =>
     {
-        policy.AllowAnyOrigin()
-              .WithOrigins("http://localhost:3000") // Permite requisições de qualquer lugar (localhost:3000, etc.)
-              .AllowAnyMethod()
-              .AllowAnyHeader()
-              .AllowCredentials();
+        builder.WithOrigins("http://localhost:5173") // Porta do Vite
+               .AllowAnyMethod()
+               .AllowAnyHeader()
+               .AllowCredentials();
     });
 });
 
@@ -45,10 +45,9 @@ builder.Services.AddSignalR();
 builder.Services.AddControllers();
 
 var app = builder.Build();
-app.UseHttpsRedirection();
 app.MapControllers();
-app.UseCors("AllowAll");
 
 app.MapHub<GameHub>("/gameHub");
+app.UseCors("CorsPolicy");
 
 app.Run();

@@ -1,4 +1,5 @@
 using Domain.Entities;
+using Infrastructure.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Config;
@@ -11,6 +12,7 @@ public class VordrinDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
-    public DbSet<User> Users { get; set; }
-    public DbSet<Character> Characters { get; set; }
+    public DbSet<UserDto> Users { get; set; }
+    public DbSet<CharacterDto> Characters { get; set; }
+    public DbSet<WeaponDto> Weapons { get; set; }
 }

@@ -6,7 +6,7 @@ public class Email(string email)
 {
     [EmailAddress]
     private readonly string _email = email;
-    public string GetEmail()
+    public string Get()
     {
         return _email;
     }

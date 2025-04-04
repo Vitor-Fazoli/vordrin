@@ -12,7 +12,7 @@ public class Password(string password)
         return password;
     }
 
-    public string GetPassword()
+    public string Get()
     {
         return _password;
     }

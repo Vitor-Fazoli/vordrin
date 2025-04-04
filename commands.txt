@@ -1,0 +1,3 @@
+dotnet ef --startup-project ./Application/Application.csproj migrations add MyMigration --context VordrinDbContext --output-dir Migrations --project ./Infrastructure/Infrastructure.csproj
+
+dotnet ef Database update --project Application/Application.csproj

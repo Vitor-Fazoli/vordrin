@@ -10,7 +10,7 @@ public static class InfrastructureModule
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<VordrinDbContext>(options =>
-            options.UseSqlite("Data Source=app.db"));
+            options.UseSqlite("Data Source=../Infrastructure/app.db"));
 
         return services;
     }
