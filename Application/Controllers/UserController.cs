@@ -1,27 +1,25 @@
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using Application.Dtos;
-using Application.Services;
-using Infrastructure.Config;
-using Infrastructure.Dtos;
+using System.Security.Claims;
+using Application.Interfaces;
+using Application.Requests;
+using Application.Responses;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.Sqlite;
 
 namespace Application.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(VordrinDbContext context) : ControllerBase
+public class UserController(IUserService userService) : ControllerBase
 {
-    private readonly VordrinDbContext _context = context;
+    private readonly IUserService _userService = userService;
 
-    [HttpPost("create")]
+    [HttpPost]
     public async Task<IActionResult> Create([FromBody] UserRequest user)
     {
         try
         {
-            UserService userService = new(_context);
-            await userService.Create(user.Parse());
+            await _userService.Create(user);
 
             return Ok("User registered!");
         }
@@ -31,19 +29,35 @@ public class UserController(VordrinDbContext context) : ControllerBase
         }
     }
 
-    [HttpPost("auth")]
-    public async Task<IActionResult> Auth([FromBody] LoginRequest auth)
+    [Authorize]
+    [HttpGet]
+    public async Task<IActionResult> GetUserAuth()
     {
+        var user = User;
+
+        if (user is null)
+        {
+            return Unauthorized("User not authenticated!");
+        }
+
+        if (user.Identity is null || !user.Identity.IsAuthenticated)
+        {
+            return Unauthorized("User not authenticated!");
+        }
+
+        string userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+
         try
         {
-            UserService userService = new(_context);
-            //await userService.Create(user);
+            UserResponse userAuth = await _userService.GetUserById(Guid.Parse(userId));
 
-            return Ok("User registered!");
+            
+
+            return Ok();
         }
-        catch (ExternalException)
+        catch (Exception)
         {
-            return BadRequest();
+            return BadRequest("User not found!");
         }
     }
 }

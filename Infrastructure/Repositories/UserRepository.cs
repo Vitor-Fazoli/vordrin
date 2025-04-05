@@ -1,5 +1,4 @@
 using System.Data.Common;
-using Domain.Entities;
 using Domain.Interfaces;
 using Infrastructure.Config;
 using Infrastructure.Dtos;
@@ -51,7 +50,19 @@ public class UserRepository(VordrinDbContext db) : IUserRepository<UserDto>
     /// <returns></returns>
     public async Task<UserDto> GetByCredentialAsync(string credential, string password)
     {
-        return await db.Users.Where(u => (u.Email == credential || u.Username == credential) && u.Password == password).SingleAsync();
+        if (string.IsNullOrEmpty(credential) || string.IsNullOrEmpty(password))
+            return null!;
+
+        UserDto? user = await db.Users
+            .Where(u => u.Username == credential || u.Email == credential)
+            .SingleOrDefaultAsync();
+
+        if (user == null || !Crypt.VerifyPassword(password, user.Password))
+        {
+            return null!;
+        }
+
+        return user;
     }
 
     public Task UpdateAsync(UserDto entity)

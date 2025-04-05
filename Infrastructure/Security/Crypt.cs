@@ -6,4 +6,9 @@ public static class Crypt
     {
         return BCrypt.Net.BCrypt.HashPassword(str);
     }
+
+    public static bool VerifyPassword(string str, string hash)
+    {
+        return BCrypt.Net.BCrypt.Verify(str, hash);
+    }
 }

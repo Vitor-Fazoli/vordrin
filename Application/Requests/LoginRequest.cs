@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace Application.Dtos;
+namespace Application.Requests;
 
 public class LoginRequest
 {
@@ -11,4 +11,9 @@ public class LoginRequest
 
     [PasswordPropertyText]
     public required string Password { get; set; }
+
+    public bool Validate()
+    {
+        return !string.IsNullOrWhiteSpace(Credential) && !string.IsNullOrWhiteSpace(Password);
+    }
 }

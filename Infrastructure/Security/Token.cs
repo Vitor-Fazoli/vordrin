@@ -7,9 +7,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Security;
 
-public class Token(IOptions<TokenSettings> authSettings) : ITokenService
+public class Token(IOptions<TokenSettings> tokenSettings) : ITokenService
 {
-    private readonly TokenSettings _tokenSettings = authSettings.Value;
+    private readonly TokenSettings _tokenSettings = tokenSettings.Value;
 
     public TokenInfo GerarToken(UserDto usuario)
     {
@@ -29,7 +29,7 @@ public class Token(IOptions<TokenSettings> authSettings) : ITokenService
         DateTime expiracao = DateTime.UtcNow.AddHours(_tokenSettings.HoursUntilExpired);
 
         JwtSecurityToken token = new(
-            issuer: _tokenSettings.Emitter,
+            issuer: _tokenSettings.Issuer,
             audience: _tokenSettings.Audience,
             claims: claims,
             expires: expiracao,

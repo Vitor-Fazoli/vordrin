@@ -1,6 +1,6 @@
 using Infrastructure.Dtos;
 
-namespace Application.Dtos;
+namespace Application.Requests;
 
 public class UserRequest
 {

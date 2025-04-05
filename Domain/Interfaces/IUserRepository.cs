@@ -6,4 +6,5 @@ public interface IUserRepository<UserDto>
     Task AddAsync(UserDto entity);
     Task UpdateAsync(UserDto entity);
     Task DeleteAsync(Guid id);
+    Task<UserDto> GetByCredentialAsync(string credential, string password);
 }
