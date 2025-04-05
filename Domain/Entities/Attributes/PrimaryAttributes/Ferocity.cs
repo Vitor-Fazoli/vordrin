@@ -1,6 +1,7 @@
 using Domain.Interfaces;
 
-namespace Domain.Entities.Attributes;
+namespace Domain.Entities.Attributes.PrimaryAttributes;
+
 public class Ferocity(int ferocity) : IAttribute<int>
 {
     private int _ferocity = ferocity;

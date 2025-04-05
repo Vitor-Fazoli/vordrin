@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Entities.Attributes;
+using Domain.Entities.Attributes.PrimaryAttributes;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Character(string name, Weapon weapon) : IDamageable, IHealable
+    public class Character(string name, Weapon weapon, PrimaryAttributes primaryAttributes) : IDamageable, IHealable
     {
         [Key]
         public Guid Id = new();
@@ -16,6 +17,7 @@ namespace Domain.Entities
         public readonly Defense _defense = new(0);
         public readonly CriticalResistence _criticalResistence = new(0.05f);
         public DateTime CreatedAt = DateTime.Now;
+        public PrimaryAttributes PrimaryAttributes { get; set; } = primaryAttributes;
 
         public void Strike(IDamageable damageable)
         {

@@ -6,25 +6,35 @@ public class CharacterDto
 {
     [Key]
     public Guid Id { get; set; }
+    public Guid Owner { get; private set; }
     public string Username { get; set; } = string.Empty;
-    public int Level { get; set; }
-    public float Health { get; set; }
-    public float Defense { get; set; }
-    public float CriticalResistence { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public int Level { get; private set; } = 1;
+    public int Experience { get; set; } = 0;
+    public float Health { get; private set; } = 100f;
+    public float Defense { get; private set; } = 0f;
+    public float CriticalResistence { get; set; } = 0f;
+    public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public WeaponDto? Weapon { get; set; }
+    public int Ferocity { get; set; }
+    public int Precision { get; set; }
+    public int Rhythm { get; set; }
+    public int Vigor { get; set; }
+    public int Wisdom { get; set; }
 
     public CharacterDto() { }
 
-    public CharacterDto(Guid id, string username, int level, float health, float defense, float criticalResistence, DateTime createdAt, WeaponDto? weapon)
+    public CharacterDto(Guid id, Guid owner, string username, int level, int experience, float health, float defense, float criticalResistence, DateTime createdAt, WeaponDto? weapon, int ferocity, int precision, int rhythm, int vigor, int wisdom)
     {
         Id = id;
+        Owner = owner;
         Username = username;
-        Level = level;
-        Health = health;
-        Defense = defense;
-        CriticalResistence = criticalResistence;
-        CreatedAt = createdAt;
         Weapon = weapon;
+        Ferocity = ferocity;
+        Precision = precision;
+        Rhythm = rhythm;
+        Vigor = vigor;
+        Wisdom = wisdom;
     }
+
+    public void SetOwner(Guid owner) => Owner = owner;
 }
