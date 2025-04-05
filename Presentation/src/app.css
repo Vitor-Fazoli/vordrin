@@ -1,1 +1,36 @@
 @import 'tailwindcss';
+
+
+* {
+    font-family: "Gemunu Libre", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: black;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: black;
+    border: 2px solid #1f1f1f;
+    border-radius: 0;
+}
+
+html {
+    scrollbar-color: #be123c black;
+    scrollbar-width: thin;
+}
+
+button {
+    @apply border border-rose-700 px-2 py-1 cursor-pointer hover:bg-rose-700 hover:border-rose-700 duration-150;
+}
+
+input {
+    @apply border border-rose-700 px-2 py-1 focus:bg-rose-700 hover:border-rose-700 focus:outline-0;
+}

@@ -16,12 +16,12 @@ public class UserController(VordrinDbContext context) : ControllerBase
     private readonly VordrinDbContext _context = context;
 
     [HttpPost("create")]
-    public async Task<IActionResult> Create([FromBody] UserDto user)
+    public async Task<IActionResult> Create([FromBody] UserRequest user)
     {
         try
         {
             UserService userService = new(_context);
-            await userService.Create(user);
+            await userService.Create(user.Parse());
 
             return Ok("User registered!");
         }
@@ -32,7 +32,7 @@ public class UserController(VordrinDbContext context) : ControllerBase
     }
 
     [HttpPost("auth")]
-    public async Task<IActionResult> Auth([FromBody] UserAuthDto auth)
+    public async Task<IActionResult> Auth([FromBody] LoginRequest auth)
     {
         try
         {

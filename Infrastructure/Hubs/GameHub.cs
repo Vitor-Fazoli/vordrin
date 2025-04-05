@@ -32,14 +32,14 @@ public class Enemy
 public class GameHub : Hub
 {
     private static ConcurrentDictionary<string, Player> _connectedPlayers = new ConcurrentDictionary<string, Player>();
-    private static List<Enemy> _enemies = new List<Enemy>();
-    private static Random _random = new Random();
+    private static List<Enemy> _enemies = [];
+    private static Random _random = new();
     private static int _enemyIdCounter = 1;
 
     public override async Task OnConnectedAsync()
     {
         var playerId = Context.ConnectionId;
-        var player = new Player { ConnectionId = playerId, Username = $"Player_{playerId.Substring(0, 5)}" };
+        var player = new Player { ConnectionId = playerId, Username = $"Player_{playerId[..5]}" };
         _connectedPlayers.TryAdd(playerId, player);
 
         // Se não houver inimigos, cria um
@@ -62,7 +62,24 @@ public class GameHub : Hub
         await base.OnDisconnectedAsync(exception);
     }
 
-    // Método para atacar um inimigo (clique esquerdo)
+    public async Task PrepareEnemyAttack(int enemyId, string targetPlayerId)
+    {
+        var enemy = _enemies.Find(e => e.Id == enemyId);
+        if (enemy == null)
+            return;
+
+        if (!_connectedPlayers.TryGetValue(targetPlayerId, out var player))
+            return;
+
+        // Notificar que o ataque está próximo
+        await Clients.All.SendAsync("EnemyPreparingAttack", enemyId, targetPlayerId);
+
+        // Esperar 1.5 segundos antes de realizar o ataque
+        await Task.Delay(1500);
+
+        // Realizar o ataque
+        await ProcessEnemyAttack(enemyId, targetPlayerId);
+    }
     public async Task AttackEnemy(int enemyId)
     {
         var playerId = Context.ConnectionId;
@@ -237,6 +254,35 @@ public class GameHub : Hub
             }
         }
     }
+
+    private static bool _enemyLoopStarted = false;
+
+    public void StartEnemyAttackLoop()
+    {
+        if (_enemyLoopStarted) return;
+
+        _enemyLoopStarted = true;
+        _ = Task.Run(async () =>
+        {
+            while (true)
+            {
+                await Task.Delay(1000);
+
+                foreach (var enemy in _enemies)
+                {
+                    if (enemy.IsAttacking || (DateTime.Now - enemy.LastAttackTime).TotalMilliseconds < enemy.AttackCooldown)
+                        continue;
+
+                    var targetPlayer = _connectedPlayers.Values.OrderBy(_ => _random.Next()).FirstOrDefault();
+                    if (targetPlayer != null)
+                    {
+                        await PrepareEnemyAttack(enemy.Id, targetPlayer.ConnectionId);
+                    }
+                }
+            }
+        });
+    }
+
 
     // Construtor estático para iniciar o loop de ataque
     static GameHub()

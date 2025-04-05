@@ -63,4 +63,9 @@ public class Enemy : IHealable, IDamageable
     {
         return Id;
     }
+
+    public float GetHealth()
+    {
+        return Health.Get();
+    }
 }
