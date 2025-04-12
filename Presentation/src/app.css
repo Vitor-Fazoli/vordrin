@@ -1,6 +1,11 @@
 @import 'tailwindcss';
 
 
+@theme {
+    --color-primary: #be123c;
+    --color-background: black;
+}
+
 * {
     font-family: "Gemunu Libre", sans-serif;
     font-optical-sizing: auto;
@@ -25,12 +30,4 @@
 html {
     scrollbar-color: #be123c black;
     scrollbar-width: thin;
-}
-
-button {
-    @apply border border-rose-700 px-2 py-1 cursor-pointer hover:bg-rose-700 hover:border-rose-700 duration-150;
-}
-
-input {
-    @apply border border-rose-700 px-2 py-1 focus:bg-rose-700 hover:border-rose-700 focus:outline-0;
 }
