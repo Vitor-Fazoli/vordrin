@@ -1,5 +1,7 @@
 <script>
 	import { onMount } from 'svelte';
+	import Tooltip from '../../../components/Tooltip.svelte';
+	import Icon from '../../../components/ItemSlot.svelte';
 
 	$: characters = [
 		{
@@ -95,30 +97,55 @@
 	</div>
 	<div class="border-primary h-full w-3/4 border p-2">
 		{#if character}
-			<div class="h-11/12 flex flex-col gap-2">
-				<div>
-					<h2 class="text-6xl">{character.name}</h2>
-					<p class="text-2xl">Level {character.level}</p>
-				</div>
-				<div>
-					<h3 class="text-4xl">Weapon</h3>
-					<p>
-						{character.weapon.name} ({character.weapon.type})<br />
-					</p>
-				</div>
-				<div>
-					<h3 class="text-4xl">Attributes</h3>
-					<div class="flex flex-col gap-2">
-						{#each Object.entries(character.attributes) as [key, value]}
-							<div class="border-primary flex w-1/3 justify-between border p-1">
-								<p class="text-lg capitalize">{key}</p>
-								<div
-									class="bg-primary text-background flex size-7 flex-col items-center justify-center text-xl font-black"
-								>
-									<p>{value}</p>
+			<div class="h-11/12 flex gap-2">
+				<div class="w-1/2">
+					<div>
+						<h2 class="text-6xl">{character.name}</h2>
+						<p class="text-2xl">Level {character.level}</p>
+					</div>
+					<div>
+						<h3 class="text-4xl">Weapon</h3>
+						<p>
+							{character.weapon.name} ({character.weapon.type})<br />
+						</p>
+					</div>
+					<div>
+						<h3 class="text-4xl">Attributes</h3>
+						<div class="flex flex-col gap-2">
+							{#each Object.entries(character.attributes) as [key, value]}
+								<div class="border-primary flex w-2/3 justify-between border p-1">
+									<p class="text-lg capitalize">{key}</p>
+									<div
+										class="bg-primary text-background flex size-7 flex-col items-center justify-center text-xl font-black"
+									>
+										<p>{value}</p>
+									</div>
 								</div>
-							</div>
-						{/each}
+							{/each}
+						</div>
+					</div>
+				</div>
+				<div class="w-1/2">
+					<div class="flex flex-col gap-2">
+						<div class="flex gap-2">
+							<Icon name="teste" description="this item is very powerfull"></Icon>
+						</div>
+						<div class="flex justify-end gap-2">
+							<Tooltip text="Im a tooltip!" position="top">
+								<div
+									class="border-primary flex size-20 flex-col items-center justify-center border text-xl"
+								>
+									<p>Head</p>
+								</div>
+							</Tooltip>
+							<Tooltip text="Im a tooltip!" position="top">
+								<div
+									class="border-primary flex size-20 flex-col items-center justify-center border text-xl"
+								>
+									<p>Head</p>
+								</div>
+							</Tooltip>
+						</div>
 					</div>
 				</div>
 			</div>
