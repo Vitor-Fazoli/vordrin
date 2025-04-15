@@ -15,7 +15,7 @@
 	});
 
 	function handleMouseMove(event) {
-		if (!isClient) return; // Não executa no servidor
+		if (!isClient || text === '') return;
 
 		mouseX = event.clientX;
 		mouseY = event.clientY;
@@ -53,19 +53,19 @@
 	}
 
 	function handleMouseEnter() {
-		if (!isClient) return; // Não executa no servidor
+		if (!isClient || text === '') return;
 		visible = true;
 		window.addEventListener('mousemove', handleMouseMove);
 	}
 
 	function handleMouseLeave() {
-		if (!isClient) return; // Não executa no servidor
+		if (!isClient || text === '') return;
 		visible = false;
 		window.removeEventListener('mousemove', handleMouseMove);
 	}
 
 	onDestroy(() => {
-		if (!isClient) return; // Não executa no servidor
+		if (!isClient || text === '') return;
 		window.removeEventListener('mousemove', handleMouseMove);
 	});
 </script>

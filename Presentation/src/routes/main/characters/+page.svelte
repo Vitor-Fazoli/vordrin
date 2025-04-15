@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import Tooltip from '../../../components/Tooltip.svelte';
 	import Icon from '../../../components/ItemSlot.svelte';
+	import { goto } from '$app/navigation';
 
 	$: characters = [
 		{
@@ -92,6 +93,9 @@
 		</div>
 		<button
 			class="h-1/12 bg-primary text-background w-full cursor-pointer text-lg font-bold duration-150 hover:text-white"
+			on:click={() => {
+				goto('/main/characters/new');
+			}}
 			>Create new Character
 		</button>
 	</div>
@@ -125,26 +129,18 @@
 						</div>
 					</div>
 				</div>
-				<div class="w-1/2">
-					<div class="flex flex-col gap-2">
-						<div class="flex gap-2">
-							<Icon name="teste" description="this item is very powerfull"></Icon>
+				<div class="flex w-1/2 flex-col items-center justify-center">
+					<div class="flex flex-col justify-center gap-2">
+						<div class="flex justify-center gap-2">
+							<Icon name="Head"></Icon>
 						</div>
-						<div class="flex justify-end gap-2">
-							<Tooltip text="Im a tooltip!" position="top">
-								<div
-									class="border-primary flex size-20 flex-col items-center justify-center border text-xl"
-								>
-									<p>Head</p>
-								</div>
-							</Tooltip>
-							<Tooltip text="Im a tooltip!" position="top">
-								<div
-									class="border-primary flex size-20 flex-col items-center justify-center border text-xl"
-								>
-									<p>Head</p>
-								</div>
-							</Tooltip>
+						<div class="flex justify-center gap-2">
+							<Icon name="Arms"></Icon>
+							<Icon name="Chest"></Icon>
+							<Icon name="Back"></Icon>
+						</div>
+						<div class="flex justify-center gap-2">
+							<Icon name="Legs"></Icon>
 						</div>
 					</div>
 				</div>
