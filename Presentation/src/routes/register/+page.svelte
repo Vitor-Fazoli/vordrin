@@ -17,18 +17,36 @@
 
 <div class="flex h-screen w-screen flex-col items-center justify-center gap-5 bg-black text-white">
 	<div class="flex flex-col items-center justify-center gap-5">
-		<h1>Register</h1>
+		<h1 class="text-xl">No gods. No second chances, Enter if you can.</h1>
 		<form class="m-0 flex flex-col gap-2 p-0" on:submit={handleRegister}>
-			<input type="email" name="email" placeholder="Email" required bind:value={email} />
-			<input type="text" name="username" placeholder="Username" required bind:value={username} />
+			<p class="text-xs">Email</p>
 			<input
+				class="border-primary border pl-2"
+				type="email"
+				name="email"
+				required
+				bind:value={email}
+			/>
+			<p class="text-xs">Username</p>
+			<input
+				class="border-primary border pl-2"
+				type="text"
+				name="username"
+				required
+				bind:value={username}
+			/>
+			<p class="text-xs">Password</p>
+			<input
+				class="border-primary border pl-2"
 				type="password"
 				name="password"
-				placeholder="Password"
 				required
 				bind:value={password}
 			/>
-			<button type="submit">Register</button>
+			<button
+				class="text-primary border-primary cursor-pointer border duration-150 hover:border-white hover:bg-white hover:text-black"
+				type="submit">Register</button
+			>
 		</form>
 	</div>
 </div>

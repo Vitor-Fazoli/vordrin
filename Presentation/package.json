@@ -25,6 +25,7 @@
 		"vite": "^6.2.5"
 	},
 	"dependencies": {
-		"@microsoft/signalr": "^8.0.7"
+		"@microsoft/signalr": "^8.0.7",
+		"svelte-i18n": "^4.0.1"
 	}
 }
