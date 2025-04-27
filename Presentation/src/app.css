@@ -1,9 +1,28 @@
 @import 'tailwindcss';
 
-
 @theme {
     --color-primary: #be123c;
     --color-background: black;
+}
+
+@layer utilities {
+    @keyframes shine {
+        0% {
+            background-position: 200% 0;
+        }
+
+        100% {
+            background-position: -200% 0;
+        }
+    }
+
+    .animate-shine {
+        animation: shine 5s linear infinite;
+    }
+}
+
+img {
+    image-rendering: pixelated
 }
 
 * {

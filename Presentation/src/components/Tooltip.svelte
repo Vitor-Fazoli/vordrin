@@ -1,7 +1,7 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 
-	export let text = '';
+	export let text = null; // Para conteúdo HTML dinâmico
 
 	let tooltip;
 	let visible = false;
@@ -15,7 +15,7 @@
 	});
 
 	function handleMouseMove(event) {
-		if (!isClient || text === '') return;
+		if (!isClient || !text) return;
 
 		mouseX = event.clientX;
 		mouseY = event.clientY;
@@ -24,16 +24,13 @@
 			const { offsetHeight, offsetWidth } = tooltip;
 			const tooltipRect = tooltip.getBoundingClientRect();
 
-			// Verifique se o tooltip está saindo da tela
 			const willOverflowTop = mouseY - offsetHeight - 10 < 0;
 			const willOverflowBottom = mouseY + offsetHeight + 10 > window.innerHeight;
 			const willOverflowLeft = mouseX - offsetWidth - 10 < 0;
 			const willOverflowRight = mouseX + offsetWidth + 10 > window.innerWidth;
 
-			// Se o topo não couber, vamos posicionar o tooltip em baixo
 			position = willOverflowTop ? 'bottom' : 'top';
 
-			// Se sair da tela à esquerda ou direita, ajustamos a posição
 			if (willOverflowLeft) {
 				tooltip.style.left = '20px';
 			} else if (willOverflowRight) {
@@ -45,7 +42,6 @@
 			tooltip.style.top =
 				position === 'top' ? `${mouseY - offsetHeight - 10}px` : `${mouseY + 20}px`;
 
-			// Se sair da tela no topo, reposicionamos embaixo
 			if (willOverflowBottom) {
 				tooltip.style.top = `${mouseY - offsetHeight - 10}px`;
 			}
@@ -53,19 +49,19 @@
 	}
 
 	function handleMouseEnter() {
-		if (!isClient || text === '') return;
+		if (!isClient || !text) return;
 		visible = true;
 		window.addEventListener('mousemove', handleMouseMove);
 	}
 
 	function handleMouseLeave() {
-		if (!isClient || text === '') return;
+		if (!isClient || !text) return;
 		visible = false;
 		window.removeEventListener('mousemove', handleMouseMove);
 	}
 
 	onDestroy(() => {
-		if (!isClient || text === '') return;
+		if (!isClient || !text) return;
 		window.removeEventListener('mousemove', handleMouseMove);
 	});
 </script>
@@ -86,7 +82,7 @@
 		bind:this={tooltip}
 		class="tooltip bg-background border-primary visible z-10 border p-4 text-sm text-white"
 	>
-		{text}
+		{@html text}
 	</div>
 {/if}
 

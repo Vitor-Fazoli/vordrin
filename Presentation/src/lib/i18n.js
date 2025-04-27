@@ -9,7 +9,7 @@ export async function setupI18n() {
     if (browser) {
         await init({
             fallbackLocale: 'en',
-            initialLocale: getLocaleFromNavigator() ?? 'en',
+            initialLocale: 'en' //getLocaleFromNavigator(),
         });
     }
 }

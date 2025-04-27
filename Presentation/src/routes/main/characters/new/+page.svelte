@@ -4,13 +4,29 @@
 			name: 'Greatsword',
 			damage: 2.5,
 			critical_chance: 0.1,
-			critical_damage: 1.5
+			critical_damage: 1.5,
+			left_click: {
+				name: 'Percer',
+				description: ''
+			},
+			right_click: {
+				name: 'Vaccin',
+				description: ''
+			}
 		},
 		{
 			name: 'Longbow',
 			damage: 3.5,
 			critical_chance: 0.2,
-			critical_damage: 2.0
+			critical_damage: 2.0,
+			left_click: {
+				name: 'Percer',
+				description: ''
+			},
+			right_click: {
+				name: 'Vaccin',
+				description: ''
+			}
 		},
 		{
 			name: 'Injecteur',

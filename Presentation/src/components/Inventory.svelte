@@ -5,10 +5,96 @@
 	// Configuração do inventário
 	let gridWidth = 5; // Número de células na horizontal
 	let gridHeight = 15; // Número de células na vertical
-	let cellSize = 50; // Tamanho em pixels de cada célula
+	let cellSize = 64; // Tamanho em pixels de cada célula
 
 	// Lista de itens no inventário
-	export let items = [];
+	export let items = [
+		{
+			id: 1,
+			name: 'Emergency Kit',
+			description: `Restaura 50 de Vida
+Consumo instantâneo`,
+			width: 1,
+			height: 1,
+			position: { x: 0, y: 0 },
+			image: 'syringe.png'
+		},
+		{
+			id: 2,
+			name: 'Gravebinder',
+			description: `Dano: 3.2 (Corpo a Corpo)
+<br/>Chance Crítica: 10%
+<br/>Velocidade de Ataque: Média
+<br/>Alcance: Médio`,
+			width: 1,
+			height: 3,
+			position: { x: 1, y: 0 },
+			image: 'gravebinder.png'
+		},
+		{
+			id: 3,
+			name: 'Escudo',
+			description: `Redução de Dano: 25%
+<br/>Durabilidade: 100
+<br/>Tipo: Defesa`,
+			width: 2,
+			height: 2,
+			position: { x: 2, y: 0 }
+		},
+		{
+			id: 4,
+			name: 'Granada',
+			description: `Dano: 50 (Explosivo)
+<br/>Raio de Explosão: 3 metros
+<br/>Tempo para Explodir: 3 segundos
+<br/>Consumo ao usar`,
+			width: 1,
+			height: 1,
+			position: { x: 4, y: 0 },
+			image: 'grenade.png'
+		},
+		{
+			id: 5,
+			name: 'Rifle Sniper',
+			description: `Dano: 3.2 (Longo Alcance)
+<br/>Chance Crítica: 25%
+<br/>Alcance Efetivo: 500 metros
+<br/>Velocidade de Disparo: Lenta`,
+			width: 2,
+			height: 1,
+			position: { x: 0, y: 4 }
+		},
+		{
+			id: 6,
+			name: 'Kit Médico',
+			description: `Restaura 100 de Vida
+<br/>Remove Efeitos Negativos
+<br/>Uso Único`,
+			width: 2,
+			height: 2,
+			position: { x: 3, y: 5 }
+		},
+		{
+			id: 7,
+			name: 'Munição',
+			description: `Contém 30 Balas
+Utilizado para Armas de Fogo`,
+			width: 1,
+			height: 1,
+			position: { x: 4, y: 8 }
+		},
+		{
+			id: 8,
+			name: 'Ballistic Vest Juggernaut Model III',
+			description: `Redução de Dano: 40%
+<br/>Durabilidade: 150
+<br/>Tipo: Defesa Corporal`,
+			width: 2,
+			height: 2,
+			position: { x: 3, y: 10 },
+			image: 'ballistic-vest-model-juggernaut.png'
+		}
+	];
 
 	// Matriz que representa a grade do inventário
 	let grid = [];
@@ -229,7 +315,7 @@
       left: ${item.position.x * cellSize}px;
       top: ${item.position.y * cellSize}px;
       background-image: url(${item.image});
-      z-index: ${draggedItem && draggedItem.id === item.id ? 1000 : 1};
+      z-index: ${draggedItem && draggedItem.id === item.id ? 10 : 1};
       will-change: transform, left, top; /* Otimização para animações */
     `;
 	}
@@ -262,16 +348,26 @@
 	<!-- Itens do inventário -->
 	{#each itemPositions as item (item.id)}
 		{#if item.position}
-			<button
-				on:contextmenu={(e) => itemClick(e, item)}
-				class="bg-primary duration-50 border-background absolute border hover:border-white"
-				style={getItemStyle(item)}
-				on:mousedown={(e) => startDrag(e, item)}
-				on:touchstart={(e) => startDrag(e, item)}
-				class:is-dragging={isDragging && draggedItem && draggedItem.id === item.id}
+			<Tooltip
+				text={`<p class="font-bold text-lg ">${item.name}</p> <br/> ${item.description}`}
+				position="top"
+				class="absolute"
 			>
-				<div class="item-name">{item.name}</div>
-			</button>
+				<button
+					on:contextmenu={(e) => itemClick(e, item)}
+					class="bg-primary duration-50 border-background absolute border hover:border-white"
+					style={getItemStyle(item)}
+					on:mousedown={(e) => startDrag(e, item)}
+					on:touchstart={(e) => startDrag(e, item)}
+					class:is-dragging={isDragging && draggedItem && draggedItem.id === item.id}
+				>
+					<img
+						src={'/items/' + item.image}
+						alt={item.name}
+						class="bg-background border-primary flex h-full w-full items-center justify-center border text-white"
+					/>
+				</button>
+			</Tooltip>
 		{/if}
 	{/each}
 </div>
