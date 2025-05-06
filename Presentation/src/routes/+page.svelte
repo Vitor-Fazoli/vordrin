@@ -1,6 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Mushroom from '$lib/assets/mushroom_login.png';
+	import Sparks from '../components/vfx/Sparks.svelte';
 
 	let email;
 	let username;
@@ -19,7 +20,8 @@
 </script>
 
 <div class="flex h-screen w-screen flex-col items-center justify-center gap-5 bg-black text-white">
-	<div class="flex flex-row items-center justify-center gap-[100px]">
+	<Sparks />
+	<div class="z-10 flex flex-row items-center justify-center gap-[100px]">
 		<img src={Mushroom} alt="" />
 		<div>
 			<form class="m-0 flex flex-col gap-2 p-0">
