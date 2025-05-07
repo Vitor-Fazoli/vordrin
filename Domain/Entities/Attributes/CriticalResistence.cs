@@ -1,6 +1,8 @@
+using Domain.Interfaces;
+
 namespace Domain.Entities.Attributes;
 
-public class CriticalResistence(float criticalResitence)
+public class CriticalResistence(float criticalResitence) : IAttribute<float>
 {
     private float _criticalResistence = Validate(criticalResitence);
     private static float Validate(float criticalResistence)

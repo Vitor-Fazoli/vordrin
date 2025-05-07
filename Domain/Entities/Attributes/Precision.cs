@@ -1,6 +1,6 @@
 using Domain.Interfaces;
 
-namespace Domain.Entities.Attributes.PrimaryAttributes;
+namespace Domain.Entities.Attributes;
 
 public class Precision(int precision) : IAttribute<int>
 {

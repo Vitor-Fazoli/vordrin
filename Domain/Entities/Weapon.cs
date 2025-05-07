@@ -1,12 +1,10 @@
-using Domain.Constants;
 using Domain.Entities.Attributes;
+using Domain.Enums;
 
 namespace Domain.Entities;
-public class Weapon(string name, Damage damage, WeaponClass weaponClass)
+public class Weapon(string name, Damage damage, WeaponType weaponClass) : Item(0, name)
 {
-    public long Id { get; set; }
-    public string Name { get; set; } = name;
-    public WeaponClass Class { get; set; } = weaponClass;
+    public WeaponType Class { get; set; } = weaponClass;
     public Damage Damage { get; set; } = damage;
     public int Value { get; set; } = 2;
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Attributes.PrimaryAttributes;
 
 namespace Infrastructure.Dtos;
 
@@ -10,9 +11,6 @@ public class CharacterDto
     public string Username { get; set; } = string.Empty;
     public int Level { get; private set; } = 1;
     public int Experience { get; set; } = 0;
-    public float Health { get; private set; } = 100f;
-    public float Defense { get; private set; } = 0f;
-    public float CriticalResistence { get; set; } = 0f;
     public DateTime CreatedAt { get; private set; } = DateTime.Now;
     public WeaponDto? Weapon { get; set; }
     public int Ferocity { get; set; }

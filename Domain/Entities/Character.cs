@@ -1,23 +1,19 @@
 using System.ComponentModel.DataAnnotations;
 using Domain.Entities.Attributes;
-using Domain.Entities.Attributes.PrimaryAttributes;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Character(string name, Weapon weapon, PrimaryAttributes primaryAttributes) : IDamageable, IHealable
+    public class Character(string name, Weapon weapon, CharacterAttributes attributes) : IDamageable, IHealable
     {
         [Key]
         public Guid Id = new();
         public required User User { get; set; }
         public Username Username = new(name);
-        private readonly Level _level = new() { experience = new() };
+        public Level Level { get; private set; } = new() { experience = new() };
         private Weapon Weapon { get; set; } = weapon;
-        public readonly Health _health = new(100);
-        public readonly Defense _defense = new(0);
-        public readonly CriticalResistence _criticalResistence = new(0.05f);
         public DateTime CreatedAt = DateTime.Now;
-        public PrimaryAttributes PrimaryAttributes { get; set; } = primaryAttributes;
+        public CharacterAttributes Attributes { get; set; } = attributes;
 
         public void Strike(IDamageable damageable)
         {
@@ -28,9 +24,9 @@ namespace Domain.Entities
             Random random = new();
 
             if (heal.CriticalChance.Get() >= (float)random.NextDouble())
-                _health.Decrease(heal.Critical());
+                Attributes.Health.Decrease(heal.Critical());
 
-            _health.Decrease(heal.Get());
+            Attributes.Health.Decrease(heal.Get());
         }
 
         public void TakeDamage(Damage damage)
@@ -38,9 +34,9 @@ namespace Domain.Entities
             Random random = new();
 
             if (damage.CriticalChance.Get() >= (float)random.NextDouble())
-                _health.Decrease(damage.Critical() - _defense.Get());
+                Attributes.Health.Decrease(damage.Critical() - Attributes.Defense.Get());
 
-            _health.Decrease(damage.Get() - _defense.Get());
+            Attributes.Health.Decrease(damage.Get() - Attributes.Defense.Get());
         }
 
         public Guid GetId()
