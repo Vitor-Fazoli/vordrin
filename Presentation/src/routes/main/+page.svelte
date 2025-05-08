@@ -1,11 +1,21 @@
 <script>
-	import Sidebar from '../../components/Sidebar.svelte';
-	import Enemy from '../../components/Enemy.svelte';
+	import { goto } from '$app/navigation';
+
+	let { data } = $props();
+
+	const characterId = data.content;
+
+	if (!characterId) {
+		goto('/main/characters');
+	} else {
+		goto(`/main/characters/${characterId}`);
+	}
 </script>
 
-<div class="bg-background flex h-screen w-screen">
+<div>
 	<main class="flex h-full w-full flex-grow">
-		<Sidebar></Sidebar>
-		<div class="h-full w-auto flex-grow p-5"><Enemy></Enemy></div>
+		<div class="h-full w-auto flex-grow p-5">
+			<p>Loading...</p>
+		</div>
 	</main>
 </div>

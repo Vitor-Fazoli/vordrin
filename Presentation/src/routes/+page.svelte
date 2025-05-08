@@ -1,7 +1,7 @@
 <script>
 	import { goto } from '$app/navigation';
 	import Mushroom from '$lib/assets/mushroom_login.png';
-	import Sparks from '../components/vfx/Sparks.svelte';
+	import Sparks from '$lib/components/vfx/Sparks.svelte';
 
 	let email;
 	let username;

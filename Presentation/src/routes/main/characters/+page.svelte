@@ -1,11 +1,12 @@
 <script>
 	import { onMount } from 'svelte';
-	import Tooltip from '../../../components/Tooltip.svelte';
-	import Icon from '../../../components/ItemSlot.svelte';
+	import Tooltip from '$lib/components/Tooltip.svelte';
+	import Icon from '$lib/components/ItemSlot.svelte';
 	import { goto } from '$app/navigation';
 
 	$: characters = [
 		{
+			id: 1,
 			name: 'Oyura',
 			level: 1,
 			weapon: {
@@ -25,6 +26,7 @@
 			}
 		},
 		{
+			id: 2,
 			name: 'Slyndra',
 			level: 25,
 			weapon: {
@@ -43,6 +45,7 @@
 			}
 		},
 		{
+			id: 3,
 			name: 'Tyrnor',
 			level: 100,
 			weapon: {
@@ -153,6 +156,7 @@
 		<div class="h-1/12 flex justify-end">
 			{#if character}
 				<button
+					on:click={() => goto(`/main/${character.id}`)}
 					class="border-primary hover:bg-primary w-40 cursor-pointer border text-xl duration-150 hover:text-white"
 					>Enter</button
 				>
