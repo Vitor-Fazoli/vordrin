@@ -2,7 +2,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Wisdom(int wisdom) : IAttribute<int>
+public class Wisdom(int wisdom) : IAttribute
 {
     private int _wisdom = wisdom;
 

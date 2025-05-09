@@ -1,10 +1,14 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class CriticalResistence(float criticalResitence) : IAttribute<float>
+public class CriticalResistence(float criticalResitence) : IStat<float>
 {
     private float _criticalResistence = Validate(criticalResitence);
+
+    public StatType Type => StatType.CriticalResistence;
+
     private static float Validate(float criticalResistence)
     {
         if (criticalResistence >= 1.0f)

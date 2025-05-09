@@ -1,11 +1,14 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class AbilityHaste(float abilityHaste) : IAttribute<float>
+public class AbilityHaste(float abilityHaste) : IStat<float>
 {
 
     private float _abilityHaste = abilityHaste;
+    public StatType Type => StatType.AbilityHaste;
+
     public float Get()
     {
         return _abilityHaste;
@@ -13,6 +16,6 @@ public class AbilityHaste(float abilityHaste) : IAttribute<float>
 
     public void Set(float attribute)
     {
-        throw new NotImplementedException();
+        _abilityHaste = attribute;
     }
 }

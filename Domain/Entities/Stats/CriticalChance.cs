@@ -1,10 +1,13 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class CriticalChance(float criticalChance) : IAttribute<float>
+public class CriticalChance(float criticalChance) : IStat<float>
 {
     private float _criticalChance = Validate(criticalChance);
+
+    public StatType Type => StatType.CriticalChance;
 
     private static float Validate(float criticalChance)
     {

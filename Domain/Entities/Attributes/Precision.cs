@@ -2,7 +2,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Precision(int precision) : IAttribute<int>
+public class Precision(int precision) : IAttribute
 {
     private int _precision = precision;
 

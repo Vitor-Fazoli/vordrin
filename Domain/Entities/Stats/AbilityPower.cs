@@ -1,10 +1,13 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class AbilityPower(float abilityPower) : IAttribute<float>
+public class AbilityPower(float abilityPower) : IStat<float>
 {
     private float _abilityPower = abilityPower;
+    public StatType Type => StatType.AbilityPower;
+
     public float Get()
     {
         return _abilityPower;
@@ -12,6 +15,6 @@ public class AbilityPower(float abilityPower) : IAttribute<float>
 
     public void Set(float attribute)
     {
-        throw new NotImplementedException();
+        _abilityPower = attribute;
     }
 }

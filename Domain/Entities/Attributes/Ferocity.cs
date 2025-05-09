@@ -2,7 +2,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Ferocity(int ferocity) : IAttribute<int>
+public class Ferocity(int ferocity) : IAttribute
 {
     private int _ferocity = ferocity;
 

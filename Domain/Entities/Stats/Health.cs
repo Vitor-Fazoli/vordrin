@@ -1,11 +1,14 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Health(float healthMax) : IAttribute<float>
+public class Health(float healthMax) : IStat<float>
 {
     private float _health = healthMax;
     private float _healthMax = healthMax;
+
+    public StatType Type => StatType.Health;
 
     public float Get()
     {

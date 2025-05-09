@@ -2,7 +2,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Rhythm(int rhythm) : IAttribute<int>
+public class Rhythm(int rhythm) : IAttribute
 {
     private int _rhythm = rhythm;
 

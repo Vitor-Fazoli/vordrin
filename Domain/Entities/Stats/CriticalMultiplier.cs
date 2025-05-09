@@ -1,10 +1,14 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class CriticalMultiplier(float criticalMultiplier) : IAttribute<float>
+public class CriticalMultiplier(float criticalMultiplier) : IStat<float>
 {
     private float _criticalMultiplier = Validate(criticalMultiplier);
+
+    public StatType Type => StatType.CriticalMultiplier;
+
     private static float Validate(float criticalMultiplier)
     {
         if (criticalMultiplier >= 3.0f)

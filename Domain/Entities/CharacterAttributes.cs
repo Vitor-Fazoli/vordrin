@@ -11,7 +11,7 @@ public class CharacterAttributes
     public Wisdom Wisdom { get; private set; }
 
     public Health Health { get; private set; }
-    public Defense Defense { get; private set; } = new(0);
+    public Armor Defense { get; private set; } = new(0);
     public CriticalResistence CriticalResistence { get; private set; }
     public AbilityHaste? AbilityHaste { get; private set; }
     public AbilityPower? AbilityPower { get; private set; }

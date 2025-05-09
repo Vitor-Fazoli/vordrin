@@ -1,10 +1,9 @@
-using Domain.Interfaces;
-
 namespace Domain.Entities.Attributes;
 
-public class Aggro : IAttribute<int>
+public class Aggro
 {
     private int _aggro;
+
     public int Get()
     {
         return _aggro;

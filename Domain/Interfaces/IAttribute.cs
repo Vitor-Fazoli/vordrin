@@ -1,7 +1,7 @@
 namespace Domain.Interfaces;
 
-public interface IAttribute<T>
+public interface IAttribute
 {
-    public T Get();
-    public void Set(T attribute);
+    public int Get();
+    public void Set(int attribute);
 }

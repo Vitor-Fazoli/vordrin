@@ -8,7 +8,7 @@ public class Enemy : IHealable, IDamageable
     public Guid Id = new();
     public required Damage Damage { get; set; }
     private readonly Health Health = new(100);
-    public Defense Defense { get; set; } = new(0);
+    public Armor Defense { get; set; } = new(0);
     public CriticalResistence CriticalResistence { get; set; } = new(0.05f);
     public required List<Action> Skills { get; set; }
     public required Cooldown Cooldown { get; set; }

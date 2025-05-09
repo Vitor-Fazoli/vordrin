@@ -2,7 +2,7 @@ using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Vigor(int vigor) : IAttribute<int>
+public class Vigor(int vigor) : IAttribute
 {
     private int _vigor = vigor;
 

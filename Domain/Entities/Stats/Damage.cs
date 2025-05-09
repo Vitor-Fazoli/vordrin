@@ -1,12 +1,16 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Damage(float damage, float criticalChance, float criticalMultiplier) : IAttribute<float>
+public class Damage(float damage, float criticalChance, float criticalMultiplier) : IStat<float>
 {
     private float _damage = Validate(damage);
+
+    public StatType Type => StatType.Damage;
     public CriticalChance CriticalChance { get; set; } = new(criticalChance);
     public CriticalMultiplier CriticalMultiplier { get; set; } = new(criticalMultiplier);
+
 
     private static float Validate(float damage)
     {

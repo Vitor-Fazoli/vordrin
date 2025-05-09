@@ -1,10 +1,13 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Defense(float defense) : IAttribute<float>
+public class Armor(float defense) : IStat<float>
 {
     private float _defense = Validate(defense);
+
+    public StatType Type => StatType.Armor;
 
     private static float Validate(float defense)
     {

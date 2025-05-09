@@ -1,11 +1,14 @@
+using Domain.Enums;
 using Domain.Interfaces;
 
 namespace Domain.Entities.Attributes;
 
-public class Cooldown(double duration) : IAttribute<double>
+public class Cooldown(double duration) : IStat<double>
 {
     private DateTime _finalTime = DateTime.MinValue;
     private readonly double _duration = Validate(duration);
+
+    public StatType Type => StatType.Cooldown;
 
     public bool IsActive => DateTime.Now < _finalTime;
 
@@ -30,7 +33,7 @@ public class Cooldown(double duration) : IAttribute<double>
         return _duration;
     }
 
-    public void Set(double attribute)
+    public void Set(double stat)
     {
         throw new NotImplementedException();
     }
