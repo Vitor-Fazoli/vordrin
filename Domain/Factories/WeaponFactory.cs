@@ -1,4 +1,5 @@
 using Domain.Entities.Attributes;
+using Domain.Factories.WeaponArquetypes;
 
 public static class WeaponFactory
 {
@@ -32,34 +33,34 @@ public static class WeaponFactory
     }
 
     // Criar uma nova instância de Nerali
-    public static Nerali CreateNerali(string id, string name, string description, float baseDamage,
-                                     float attackSpeed, int level, Sprite weaponSprite)
+    public static Nerali CreateNerali(string id, string name, string description, Damage baseDamage,
+                                     float attackSpeed, int level)
     {
-        return new Nerali(id, name, description, baseDamage, attackSpeed, level, weaponSprite);
+        return new Nerali(id, name, description, baseDamage, attackSpeed, level);
     }
 
     // Criar uma nova instância de Pistola
-    public static Pistola CreatePistola(string id, string name, string description, float baseDamage,
-                                      float attackSpeed, int level, Sprite weaponSprite)
+    public static Pistol CreatePistol(string id, string name, string description, Damage baseDamage,
+                                      float attackSpeed, int level)
     {
-        return new Pistola(id, name, description, baseDamage, attackSpeed, level, weaponSprite);
+        return new Pistol(id, name, description, baseDamage, attackSpeed, level);
     }
 
     // Criar uma nova instância de Florete
-    public static Florete CreateFlorete(string id, string name, string description, float baseDamage,
-                                      float attackSpeed, int level, Sprite weaponSprite)
+    public static RevolutionaryRapier CreateFlorete(string id, string name, string description, Damage baseDamage,
+                                      float attackSpeed, int level)
     {
-        return new Florete(id, name, description, baseDamage, attackSpeed, level, weaponSprite);
+        return new RevolutionaryRapier(id, name, description, baseDamage, attackSpeed, level);
     }
 
     // Inicialização com algumas armas de exemplo
     static WeaponFactory()
     {
         // Exemplos de Montante
-        RegisterWeapon(new Montante(
+        RegisterWeapon(new Greatsword(
             "montante_iron", "Montante de Ferro",
             "Uma espada montante básica forjada em ferro.",
-            15f, 1.2f, 1, null
+            15f, 1.2f, 1
         ));
 
         RegisterWeapon(new Montante(

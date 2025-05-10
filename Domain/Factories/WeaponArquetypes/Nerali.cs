@@ -1,57 +1,58 @@
 using System.Diagnostics;
+using System.Numerics;
 using Domain.Entities;
 using Domain.Entities.Attributes;
 using Domain.Enums;
+using Domain.Helper;
+using Domain.Interfaces;
 
 namespace Domain.Factories.WeaponArquetypes;
 
 public class Nerali : WeaponBase
 {
     private bool _isHealingMode;
-    private float _chargeStartTime;
+    private Stopwatch _chargeStopwatch = new();
     private bool _isCharging;
-    private float _maxChargeTime = 3.0f; // Tempo máximo de carga (3 segundos)
+    private readonly float _maxChargeTime = 3.0f;
 
-    public Nerali(string id, string name, string description, Damage baseDamage,
-                 float attackSpeed, int level)
-        : base(id, name, description, WeaponType.Nerali, baseDamage, attackSpeed, level)
+    public Nerali(string id, string name, string description, Damage baseDamage, int level)
+        : base(id, name, description, WeaponType.Nerali, baseDamage, level)
     {
         _isHealingMode = false;
         _isCharging = false;
 
-        // Stats específicos do Nerali
-        Stats["MaxPoisonDamage"] = baseDamage * 3.0f; // Dano máximo de veneno quando totalmente carregado
-        Stats["MaxHealAmount"] = baseDamage * 2.5f;   // Cura máxima quando totalmente carregado
+        Stats["MaxPoisonDamage"] = baseDamage.Multiply(2f);
+        Stats["MaxHealAmount"] = baseDamage.Multiply(1.5f);
     }
 
     // Começar a carregar o tiro
     public void StartCharge()
     {
         _isCharging = true;
-        _chargeStartTime = Time.time;
+        _chargeStopwatch.Restart();
     }
 
     // Liberar o tiro carregado
-    public void ReleaseCharge(Character user, Character target)
+    public void ReleaseCharge(Character user, IDamageable target)
     {
         if (!_isCharging) return;
 
-        float chargeTime = MathF.Min(Time.time - _chargeStartTime, _maxChargeTime);
+        float chargeTime = MathF.Min((float)_chargeStopwatch.Elapsed.TotalSeconds, _maxChargeTime);
         float chargePercentage = chargeTime / _maxChargeTime;
 
-        if (_isHealingMode && target is Player allyTarget)
+        if (_isHealingMode && target is Character allyTarget)
         {
-            // Modo de cura (para aliados)
-            float healAmount = Mathf.Lerp(BaseDamage, Stats["MaxHealAmount"], chargePercentage);
-            allyTarget.Heal(healAmount);
-            Debug.WriteLine($"{Name} curou {allyTarget.Name} em {healAmount} pontos!");
+            float healPoints = Mathematics.Lerp(BaseDamage.Get(), Stats["MaxHealAmount"].Get(), chargePercentage);
+
+            Heal Heal = new(healPoints, BaseDamage.CriticalChance.Get(), BaseDamage.CriticalMultiplier.Get());
+
+            allyTarget.ReceiveHeal(Heal);
+            Debug.WriteLine($"{Name} curou {allyTarget.Name} em {healPoints} pontos!");
         }
         else if (!_isHealingMode && target is Enemy enemyTarget)
         {
-            // Modo de veneno (para inimigos)
-            float poisonDamage = Mathf.Lerp(BaseDamage, Stats["MaxPoisonDamage"], chargePercentage);
-            enemyTarget.ApplyPoison(poisonDamage, 5f); // Aplica veneno por 5 segundos
-            Debug.WriteLine($"{Name} envenenou {enemyTarget.Name} causando {poisonDamage} de dano ao longo do tempo!");
+            enemyTarget.TakeDamage(BaseDamage);
+            Debug.WriteLine($"{Name} envenenou {enemyTarget.Name} causando {BaseDamage} de dano ao longo do tempo!");
         }
 
         _isCharging = false;

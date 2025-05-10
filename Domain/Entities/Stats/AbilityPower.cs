@@ -1,7 +1,7 @@
 using Domain.Enums;
 using Domain.Interfaces;
 
-namespace Domain.Entities.Attributes;
+namespace Domain.Entities.Stats;
 
 public class AbilityPower(float abilityPower) : IStat<float>
 {

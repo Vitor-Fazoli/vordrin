@@ -10,9 +10,8 @@ public class Greatsword : WeaponBase
     private bool _powerMode;
     private float _powerModeTimeRemaining;
 
-    public Greatsword(string id, string name, string description, Damage baseDamage,
-                   float attackSpeed, int level)
-        : base(id, name, description, WeaponType.Greatsword, baseDamage, attackSpeed, level)
+    public Greatsword(string id, string name, string description, Damage baseDamage, int level)
+        : base(id, name, description, WeaponType.Greatsword, baseDamage, level)
     {
         _clickCounter = 0;
         _powerMode = false;

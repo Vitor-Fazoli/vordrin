@@ -1,7 +1,7 @@
 using Domain.Enums;
 using Domain.Interfaces;
 
-namespace Domain.Entities.Attributes;
+namespace Domain.Entities.Stats;
 
 public class Damage(float damage, float criticalChance, float criticalMultiplier) : IStat<float>
 {
@@ -28,6 +28,16 @@ public class Damage(float damage, float criticalChance, float criticalMultiplier
     public void Set(float damage)
     {
         _damage = Validate(damage);
+    }
+
+    public Damage Add(float damage)
+    {
+        return new Damage(_damage * damage, CriticalChance.Get(), CriticalMultiplier.Get());
+    }
+
+    public Damage Multiply(float multiplier)
+    {
+        return new Damage(_damage * multiplier, CriticalChance.Get(), CriticalMultiplier.Get());
     }
 
     public float Critical()

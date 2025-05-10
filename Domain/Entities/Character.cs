@@ -1,23 +1,29 @@
-using System.ComponentModel.DataAnnotations;
 using Domain.Entities.Attributes;
-using Domain.Interfaces;
+using Domain.Entities.Stats;
+using Vordrin.Domain.Entities;
+using Vordrin.Domain.Enums;
 
 namespace Domain.Entities
 {
-    public class Character(string name, Weapon weapon, CharacterAttributes attributes) : IDamageable, IHealable
+    public class Character : Alived
     {
-        [Key]
-        public Guid Id = new();
+        public Guid Id { get; private set; }
         public required User User { get; set; }
-        public Username Username = new(name);
-        public Level Level { get; private set; } = new() { experience = new() };
-        private Weapon Weapon { get; set; } = weapon;
+        private Weapon Weapon { get; set; }
         public DateTime CreatedAt = DateTime.Now;
-        public CharacterAttributes Attributes { get; set; } = attributes;
+        public CharacterAttributes Attributes { get; set; }
 
-        public void Strike(IDamageable damageable)
+        public Character(string name, int level, Weapon weapon) : base(name, level)
         {
-            damageable.TakeDamage(Weapon?.Damage ?? new Damage(0.5f, 0.05f, 1.5f));
+            Id = new();
+            Name = new(name);
+            Weapon = weapon;
+            Attributes = new CharacterAttributes();
+        }
+
+        public void Strike(Alived damageable)
+        {
+            damageable.TakeDamage(Weapon?.BaseDamage.Get() ?? 0, DamageType.Physical);
         }
         public void ReceiveHeal(Heal heal)
         {
@@ -37,11 +43,6 @@ namespace Domain.Entities
                 Attributes.Health.Decrease(damage.Critical() - Attributes.Defense.Get());
 
             Attributes.Health.Decrease(damage.Get() - Attributes.Defense.Get());
-        }
-
-        public Guid GetId()
-        {
-            return Id;
         }
     }
 }

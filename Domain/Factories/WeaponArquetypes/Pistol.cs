@@ -1,4 +1,11 @@
-public class Pistola : WeaponBase
+using System.Diagnostics;
+using Domain.Entities;
+using Domain.Entities.Attributes;
+using Domain.Enums;
+
+namespace Domain.Factories.WeaponArquetypes;
+
+public class Pistol : WeaponBase
 {
     private int _currentAmmo;
     private int _maxAmmo;
@@ -6,60 +13,44 @@ public class Pistola : WeaponBase
     private bool _isReloading;
     private float _reloadTimeLeft;
 
-    public Pistola(string id, string name, string description, float baseDamage,
-                  float attackSpeed, int level, Sprite weaponSprite)
-        : base(id, name, description, WeaponType.Pistola, baseDamage, attackSpeed, level, weaponSprite)
+    public Pistola(string id, string name, string description, Damage baseDamage,
+                  float attackSpeed, int level)
+        : base(id, name, description, WeaponType.Pistol, baseDamage, attackSpeed, level)
     {
         _maxAmmo = 17;
         _currentAmmo = _maxAmmo;
         _reloadTime = 0.5f;
         _isReloading = false;
-
-        // Stats específicos da Pistola
-        Stats["CritChance"] = 0.1f + (level * 0.01f); // 10% + 1% por nível de chance de crítico
-        Stats["CritDamage"] = 2.0f; // Multiplicador de dano crítico
     }
 
-    public override void OnLeftClick(Player user, Enemy target)
+    public override void OnLeftClick(Character user, Enemy target)
     {
         // Verificar se tem munição e não está recarregando
         if (_currentAmmo <= 0 || _isReloading)
         {
-            Debug.Log(_currentAmmo <= 0 ? "Sem munição! Recarregue (botão direito)." : "Recarregando...");
+            Debug.WriteLine(_currentAmmo <= 0 ? "Sem munição! Recarregue (botão direito)." : "Recarregando...");
             return;
         }
 
-        // Calcular dano, com chance de crítico
-        float damage = CalculateDamage();
-        bool isCritical = UnityEngine.Random.value < Stats["CritChance"];
-
-        if (isCritical)
-        {
-            damage *= Stats["CritDamage"];
-            Debug.Log($"Acerto crítico! {damage} de dano.");
-        }
-
-        // Aplicar dano e consumir munição
-        target.TakeDamage(damage);
+        target.TakeDamage(CalculateDamage());
         _currentAmmo--;
 
-        Debug.Log($"{Name} atirou! Munição restante: {_currentAmmo}/{_maxAmmo}");
+        Debug.WriteLine($"{Name} atirou! Munição restante: {_currentAmmo}/{_maxAmmo}");
     }
 
-    public override void OnRightClick(Player user)
+    public override void OnRightClick(Character user)
     {
         // Iniciar recarga se não estiver recarregando e não estiver com munição cheia
         if (!_isReloading && _currentAmmo < _maxAmmo)
         {
             _isReloading = true;
             _reloadTimeLeft = _reloadTime;
-            Debug.Log($"Recarregando {Name}...");
+            Debug.WriteLine($"Recarregando {Name}...");
         }
     }
 
     public override void Update(float deltaTime)
     {
-        // Processar recarga
         if (_isReloading)
         {
             _reloadTimeLeft -= deltaTime;
@@ -68,7 +59,7 @@ public class Pistola : WeaponBase
             {
                 _currentAmmo = _maxAmmo;
                 _isReloading = false;
-                Debug.Log($"{Name} recarregada! {_currentAmmo}/{_maxAmmo} balas.");
+                Debug.WriteLine($"{Name} recarregada! {_currentAmmo}/{_maxAmmo} balas.");
             }
         }
     }

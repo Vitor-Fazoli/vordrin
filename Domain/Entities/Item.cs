@@ -1,14 +1,10 @@
 namespace Domain.Entities;
 
-public class Item(int id, string name)
+public class Item(string id, string name)
 {
-    public long Id { get; private set; } = id;
-    public string? Name { get; private set; } = name;
+    public string Id { get; set; } = id;
+    public string Name { get; set; } = name;
+    public string? Description { get; private set; }
     public int Width { get; set; } = 1;
     public int Height { get; set; } = 1;
-
-    public virtual void UseItem(Character character)
-    {
-        
-    }
 }
