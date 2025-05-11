@@ -1,19 +1,41 @@
 namespace Domain.Entities;
 
-public class Experience
+public class ExperiencePoints
 {
-    public const int XP_TO_LEVEL_UP = 300;
-    private int _experience = 0;
+    public int Current { get; private set; }
+    public int NextLevelThreshold { get; private set; }
+    public int Level { get; private set; }
 
-    public void Increase()
+    public ExperiencePoints()
     {
-        _experience++;
+        Level = 1;
+        Current = 0;
+        CalculateNextLevelThreshold();
     }
 
-    public void TurnZero()
+    private void CalculateNextLevelThreshold()
     {
-        _experience = 0;
+        NextLevelThreshold = 100;
     }
 
-    public bool IsFull() => _experience == XP_TO_LEVEL_UP;
+    public void Add(int amount)
+    {
+        if (amount <= 0) return;
+
+        Current += amount;
+    }
+
+    public bool CanLevelUp()
+    {
+        return Current >= NextLevelThreshold;
+    }
+
+    public void LevelUp()
+    {
+        if (!CanLevelUp()) return;
+
+        Current -= NextLevelThreshold;
+        Level++;
+        CalculateNextLevelThreshold();
+    }
 }

@@ -1,7 +1,6 @@
 using Domain.Entities.Attributes;
 using Domain.Entities.Stats;
 using Vordrin.Domain.Entities;
-using Vordrin.Domain.Enums;
 
 namespace Domain.Entities
 {
@@ -12,19 +11,17 @@ namespace Domain.Entities
         private Weapon Weapon { get; set; }
         public DateTime CreatedAt = DateTime.Now;
         public CharacterAttributes Attributes { get; set; }
+        public CharacterStats CharacterStats { get; set; }
 
-        public Character(string name, int level, Weapon weapon) : base(name, level)
+        public Character(string name, int level, Weapon weapon, Ferocity fer, Precision pre, Rhythm Rhy, Vigor vig, Wisdom Wis) : base(name, level)
         {
             Id = new();
             Name = new(name);
             Weapon = weapon;
-            Attributes = new CharacterAttributes();
+            Attributes = new CharacterAttributes(fer, pre, Rhy, vig, Wis);
+            CharacterStats = new CharacterStats(Attributes);
         }
 
-        public void Strike(Alived damageable)
-        {
-            damageable.TakeDamage(Weapon?.BaseDamage.Get() ?? 0, DamageType.Physical);
-        }
         public void ReceiveHeal(Heal heal)
         {
             Random random = new();

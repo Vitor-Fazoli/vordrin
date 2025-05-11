@@ -1,6 +1,6 @@
 namespace Domain.Enums;
 
-public enum WeaponRarity
+public enum ItemRarity
 {
     Common = 0,
     Uncommon = 1,

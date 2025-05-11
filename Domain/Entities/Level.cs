@@ -4,7 +4,7 @@ public class Level()
 {
     public int _level = 0;
     public DateTime updatedAt = DateTime.Now;
-    public required Experience experience;
+    public required ExperiencePoints experience;
 
     public void LevelUp()
     {

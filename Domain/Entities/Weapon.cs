@@ -1,4 +1,3 @@
-using Domain.Entities.Attributes;
 using Domain.Entities.Stats;
 using Domain.Enums;
 using Domain.Interfaces;
@@ -7,10 +6,10 @@ using Vordrin.Domain.Enums;
 namespace Domain.Entities;
 public class Weapon : Item, IWeapon
 {
-    private readonly TimeSpan cooldown = TimeSpan.FromSeconds(0.05);
-    private DateTime lastAttackTime;
+    public readonly TimeSpan cooldown = TimeSpan.FromSeconds(0.05);
+    public DateTime lastAttackTime;
     public WeaponType Type { get; protected set; }
-    public WeaponRarity Rarity { get; protected set; }
+    public ItemRarity Rarity { get; protected set; }
     public Damage BaseDamage { get; protected set; }
     public int Level { get; protected set; }
     public int MaxLevel { get; protected set; }
@@ -21,7 +20,7 @@ public class Weapon : Item, IWeapon
     public float SpecialAbilityCooldown { get; protected set; }
     public float SpecialAbilityRemainingCooldown { get; protected set; }
 
-    public Weapon(string id, string name, string description, WeaponType type, WeaponRarity rarity,
+    public Weapon(string id, string name, string description, WeaponType type, ItemRarity rarity,
                Damage baseDamage, int level = 1, int maxLevel = 50)
         : base(id, name)
     {
@@ -149,11 +148,9 @@ public class Weapon : Item, IWeapon
         // Bônus adicional a cada 10 níveis
         if (Level % 10 == 0)
         {
-            // BaseDamage.CriticalChance = new CriticalChance(StatType.CriticalChance,
-            //     BaseDamage.CriticalChance.Get() + 0.02f);
+            BaseDamage.CriticalChance = new CriticalChance(BaseDamage.CriticalChance.Get() + 0.02f);
 
-            // BaseDamage.CriticalMultiplier = new Stat(StatType.CriticalMultiplier,
-            //     BaseDamage.CriticalMultiplier.Get() + 0.1f);
+            BaseDamage.CriticalMultiplier = new CriticalMultiplier(BaseDamage.CriticalMultiplier.Get() + 0.1f);
         }
     }
 
@@ -162,37 +159,8 @@ public class Weapon : Item, IWeapon
         return 100 * Level * (1 + (int)Rarity * 0.5f);
     }
 
-    public Dictionary<string, string> GetWeaponInfo()
+    public static Weapon Create(string name, WeaponType type, ItemRarity rarity, Damage damage, int level = 1)
     {
-        var info = new Dictionary<string, string>
-            {
-                { "Name", Name },
-                { "Type", Type.ToString() },
-                { "Rarity", Rarity.ToString() },
-                { "Level", $"{Level}/{MaxLevel}" },
-                { "Damage", $"{BaseDamage.Get():F1}" },
-                { "Critical Chance", $"{BaseDamage.CriticalChance.Get() * 100:F1}%" },
-                { "Critical Multiplier", $"{BaseDamage.CriticalMultiplier.Get():F1}x" },
-                { "Special Ability", SpecialAbilityName ?? "None" },
-                { "Special Ability Description", SpecialAbilityDescription ?? "None" },
-                { "Special Cooldown", $"{SpecialAbilityCooldown:F1}s" }
-            };
-
-        // Adicionar informações sobre efeitos
-        for (int i = 0; i < Effects.Count; i++)
-        {
-            info.Add($"Effect {i + 1}", Effects[i].Name);
-            info.Add($"Effect {i + 1} Description", Effects[i].Description);
-        }
-
-        return info;
-    }
-    public static Weapon Create(string name, WeaponType type, WeaponRarity rarity, int level = 1)
-    {
-        // Criar dano base apropriado para o tipo e raridade
-        float baseDamageValue = 10.0f * (1 + (int)type * 0.5f);
-        Damage damage = new Damage(baseDamageValue);
-
         return new Weapon(
             Guid.NewGuid().ToString(),
             name,

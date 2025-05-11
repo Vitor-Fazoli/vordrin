@@ -1,5 +1,4 @@
 using Domain.Entities;
-using Domain.Entities.Attributes;
 using Domain.Entities.Stats;
 using Domain.Enums;
 
@@ -11,7 +10,7 @@ namespace Domain.Interfaces
         public string Name { get; set; }
         public string? Description { get; }
         public WeaponType Type { get; }
-        public WeaponRarity Rarity { get; }
+        public ItemRarity Rarity { get; }
         public Damage BaseDamage { get; }
         public int Level { get; }
         public int MaxLevel { get; }
@@ -25,6 +24,5 @@ namespace Domain.Interfaces
         public bool CanUpgrade();
         public void Upgrade();
         public float GetUpgradeCost();
-        public Dictionary<string, string> GetWeaponInfo();
     }
 }
